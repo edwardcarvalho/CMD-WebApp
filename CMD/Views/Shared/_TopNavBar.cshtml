@@ -1,0 +1,64 @@
+﻿
+
+<nav id="top-navbar" class="navbar navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="@Url.Action("Index","Home")" style="width: 220px;">CMD WebApp</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="#">
+                    <em class="fa fa-navicon"></em>
+                </a>
+            </li>
+        </ul>
+        @*<ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#">Page 1</a></li>
+                <li><a href="#">Page 2</a></li>*
+            </ul>*@
+        <ul class="nav navbar-nav navbar-right">
+            <li id="username" style="padding: 15px;color: white;font-weight: 700;text-transform: capitalize;"></li>
+            <li id="logout">
+                <a href="#"><span class="glyphicon glyphicon-user" aria-haspopup="true" aria-expanded="false"></span></a>
+                <ul id="submenu-logout" class="" style="list-style: none;position: absolute;right: 5px;width: 200px; display:none;">
+                    @using (Html.BeginForm("Logout", "Account", FormMethod.Post))
+                    {
+                        <li>
+                            <a id="user-signout" class="list-group-item" href="" style="color: black;" onclick="document.forms[0].submit()">
+                                <em class="fa fa-sign-out"></em>
+                                Sair
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+<script>
+
+    function delete_cookie (name) {
+        document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    };
+
+    function logout() {
+        delete_cookie("CmdUserLogged");
+        window.location.replace('@Url.Action("Index","Account")');
+    }
+
+    $(function () {
+        $('#logout').on('click', function () {
+            $('#submenu-logout').css("display", $("#submenu-logout").is(":visible") ? $("#submenu-logout").hide() : $("#submenu-logout").show());
+        });
+
+        getUserInfo();
+
+    });
+
+    function getUserInfo() {
+        $.get('@Url.Action("GetUserInfo", "Shared")', function (data) {
+            $('#username').text(data.Login);
+        });
+    }
+</script>

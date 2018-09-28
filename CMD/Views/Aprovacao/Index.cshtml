@@ -1,0 +1,287 @@
+﻿@using CMD.Model.Models
+@using CMD.Model.Enumeradores
+@using CMD.Shared.Helpers
+@model CMD.Model.Models.Medidas
+
+
+<style type="text/css">
+    th, td {
+        text-align: center !important;
+    }
+
+    span.fa.fa-edit {
+        cursor: pointer;
+    }
+</style>
+
+<div id="CadastroCtrl" ng-controller="AprovarCtrl">
+    <div class="painel">
+        <div class="painel-heading">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span>
+                        Aprovação de Medida Disciplinar
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="painel-body">
+            <div id="ListaMedidas">
+                <div class="row form-group">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Dt.Solicitação</th>
+                                            <th>Filial</th>
+                                            <th>Matricula</th>
+                                            <th>Nome</th>
+                                            <th>Supervisor</th>
+                                            <th>Dt.Ocorrência</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ int i = 0;}
+                                        @foreach (var medida in (List<Medidas>)ViewBag.Medidas)
+                                        {
+                                            <tr>
+                                                <td id="id@(i)">@medida.MedidaId</td>
+                                                <td id="dtsol@(i)">@medida.DataSolicitacao.Value.ToString("dd/MM/yyyy")</td>
+                                                <td style="display:none">@Html.Hidden("ocorrencia" + i, (medida.IdTipoOcorrencia == Convert.ToInt32(Enums.TipoDeOcorrencia.Verbal) ? Enums.TipoDeOcorrencia.Verbal : Enums.TipoDeOcorrencia.Escrita))</td>
+                                                <td id="filial@(i)">@medida.Filial.Nome</td>
+                                                <td id="matricula@(i)">@medida.Funcionario.Matricula</td>
+                                                <td id="nomeFunc@(i)">@medida.Funcionario.Nome</td>
+                                                <td id="nomeSupervisor@(i)">@medida.Funcionario.Operacao.Supervisor.Nome</td>
+                                                <td id="dtocorrencia@(i)">@medida.DataOcorrencia.Value.ToString("dd/MM/yyyy")</td>
+                                                <td style="display:none">@Html.Hidden("advertencia" + i, medida.Advertencia.Descricao)</td>
+                                                <td style="display:none">@Html.Hidden("motivo" + i, medida.Motivo.Descricao)</td>
+                                                <td style="display:none">@Html.Hidden("telefone" + i, medida.Telefone)</td>
+                                                <td style="display:none">@Html.Hidden("descricao" + i, medida.Descricao)</td>
+                                                <td style="display:none">@Html.Hidden("comentario1" + i, medida.Comentario1)</td>
+                                                <td style="display:none">@Html.Hidden("comentario2" + i, medida.Comentario2)</td>
+                                                <td style="display:none">@Html.Hidden("alinea" + i, medida.Alinea)</td>
+                                                <td style="display:none">@Html.Hidden("statusId" + i, medida.StatusId)</td>
+                                                <td style="display:none">@Html.Hidden("dataInicio" + i, medida.DataInicioSuspensao != null ? medida.DataInicioSuspensao.Value.ToString("dd/MM/yyyy") : "")</td>
+                                                <td style="display:none">@Html.Hidden("dataFinal" + i, medida.DataFinalSuspensao != null ? medida.DataFinalSuspensao.Value.ToString("dd/MM/yyyy") : "")</td>
+                                                <td>@(Helper.GetEnumDescription((Enums.StatusMedida)medida.StatusId))</td>
+                                                <td><a ng-click="visualizarMedida(@(i))"><span class="fa fa-edit" data-toggle="modal" data-target="#modalEditar" style="font-size: 18px;"></span></a></td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* MODAL CONTENT *@
+    <form name="formAprovacao">
+        <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document" style="min-width:70%">
+                <div class="modal-content">
+                    <div class="modal-header painel-heading">
+                        <h4 class="modal-title" id="exampleModalLabel">Medida Disciplinar Nº {{medida.idMedida}}</h4>
+                    </div>
+                    <div class="modal-body painel-body">
+                        <div id="analisarMedida">
+                            <div class="row form-group">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-12">
+                                        @Html.HiddenFor(c => c.MedidaId, new { ng_model = "medida.idMedida" })
+                                        @Html.Label("Colaborador")
+                                        @Html.TextBox("Colaborador", null, new { @class = "form-control", ng_model = "medida.nomeFunc", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-4">
+                                        @Html.Label("Advertencia")
+                                        @Html.TextBox("Advertencia", null, new { @class = "form-control", ng_model = "medida.advertencia", @readonly = true })
+                                    </div>
+                                    <div class="col-xs-8">
+                                        @Html.Label("Motivo")
+                                        @Html.TextBox("Motivo", null, new { @class = "form-control", ng_model = "medida.motivo", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-4">
+                                        @Html.Label("Tipo de Ocorrência")
+                                        @Html.TextBox("Ocorrencia", null, new { @class = "form-control", ng_model = "medida.ocorrencia", @readonly = true })
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.Label("Data da Ocorrência")
+                                        @Html.TextBox("DtOcorrencia", null, new { @class = "form-control", ng_model = "medida.dtocorrencia", @readonly = true })
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.Label("Telefone")
+                                        @Html.TextBox("Telefone", null, new { @class = "form-control", ng_model = "medida.telefone", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-12">
+                                        @Html.Label("Descrição")
+                                        @Html.TextArea("Descricao", null, new { @class = "form-control", ng_model = "medida.descricao", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-12">
+                                        @Html.Label("Comentário - Coordenador/Gerente")
+                                        @if (ViewBag.Profile.PerfilId == (int)Enums.Perfil.Coordenador || ViewBag.Profile.PerfilId == (int)Enums.Perfil.Gerente || ViewBag.Profile.PerfilId == (int)Enums.Perfil.Administrador)
+                                        {
+                                            <textarea id="Comentario1" type="text" class="form-control" ng-model="medida.comentario1" ng-disabled="medida.statusId != @((int)Enums.StatusMedida.AguardandoAprovacaoCoordenadorGerente)" ng-required="medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoCoordenadorGerente)"></textarea>
+                                        }
+                                        else
+                                        {
+                                            @Html.TextArea("Comentario1", null, new { @class = "form-control", ng_model = "medida.comentario1", @readonly = true, ng_required = "$(this).is(':enabled')" })
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            @if (ViewBag.Profile.PerfilId != (int)Enums.Perfil.Coordenador && ViewBag.Profile.PerfilId != (int)Enums.Perfil.Gerente)
+                            {
+                                <div class="row form-group">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-12">
+                                            @Html.Label("Alínea")
+                                            <textarea type="text" class="form-control" ng-model="medida.alinea" ng-disabled="medida.statusId != @((int)Enums.StatusMedida.AguardandoAprovacaoRH)" ng-required="medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoRH)"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-12">
+                                            @Html.Label("Comentário - RH")
+                                            <textarea type="text" class="form-control" ng-model="medida.comentario2" ng-disabled="medida.statusId != @((int)Enums.StatusMedida.AguardandoAprovacaoRH)" ng-required="medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoRH)"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-12">
+                                            @Html.Label("Periodo de Suspensão")
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-6">
+                                            @Html.Label("Inicio")
+                                            <input type="text" id="dataInicio" class="form-control" ng-model="medida.dataInicio" ng-disabled="medida.statusId != @((int)Enums.StatusMedida.AguardandoAprovacaoRH)" />
+                                        </div>
+                                        <div class="col-xs-6">
+                                            @Html.Label("Fim")
+                                            <input type="text" id="dataFinal" class="form-control" ng-model="medida.dataFinal" ng-disabled="medida.statusId != @((int)Enums.StatusMedida.AguardandoAprovacaoRH)" ng-required="medida.dataInicio" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div ng-show="medida.statusId != @((int)Enums.StatusMedida.Aprovado) && medida.statusId != @((int)Enums.StatusMedida.Reprovado)">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-if="medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoCoordenadorGerente) || medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoRH)">Cancelar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-if="medida.statusId != @((int)Enums.StatusMedida.AguardandoAprovacaoCoordenadorGerente) && medida.statusId != @((int)Enums.StatusMedida.AguardandoAprovacaoRH)">Fechar</button>
+                            <button type="button" class="btn btn-warning" ng-click="salvar('@((int)Enums.Acao.Reprovar)')" ng-disabled="!formAprovacao.$valid" ng-show="medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoCoordenadorGerente) || medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoRH)">Reprovar</button>
+                            <button type="button" class="btn btn-primary" ng-click="salvar('@((int)Enums.Acao.Aprovar)')" ng-disabled="!formAprovacao.$valid" ng-show="medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoCoordenadorGerente) || medida.statusId == @((int)Enums.StatusMedida.AguardandoAprovacaoRH)">Aprovar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+        $('#dataInicio, #dataFinal').datepicker({
+            dateFormat: 'dd/mm/yy',
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior'
+        });
+
+        $('#dataInicio, #dataFinal').inputmask("99/99/9999");
+    });
+
+    var app = angular.module("app", []);
+
+    app.controller('AprovarCtrl', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
+
+        $scope.medida = {};
+
+        $scope.visualizarMedida = function (id) {
+            $scope.medida = {};
+            $scope.medida.idMedida = $('#id' + id).text();
+            $scope.medida.statusId = $('#statusId' + id).val();
+            $scope.medida.nomeFunc = $('#nomeFunc' + id).text();
+            $scope.medida.advertencia = $('#advertencia' + id).val();
+            $scope.medida.motivo = $('#motivo' + id).val();
+            $scope.medida.ocorrencia = $('#ocorrencia' + id).val();
+            $scope.medida.dtocorrencia = $('#dtocorrencia' + id).text();
+            $scope.medida.telefone = $('#telefone' + id).val();
+            $scope.medida.descricao = $('#descricao' + id).val();
+            $scope.medida.alinea = $('#alinea' + id).val();
+            $scope.medida.comentario1 = $('#comentario1' + id).val();
+            $scope.medida.comentario2 = $('#comentario2' + id).val();
+            $scope.medida.dataInicio = $('#dataInicio' + id).val();
+            $scope.medida.dataFinal = $('#dataFinal' + id).val();
+        };
+
+        $scope.getAprovacaoViewModel = function (acao) {
+
+            $scope.aprovacao = {};
+            $scope.aprovacao.idMedida = $scope.medida.idMedida;
+            $scope.aprovacao.comentario1 = $scope.medida.comentario1;
+            $scope.aprovacao.comentario2 = $scope.medida.comentario2;
+            $scope.aprovacao.alinea = $scope.medida.alinea;
+            $scope.aprovacao.acao = acao;
+            $scope.aprovacao.dataInicio = $scope.medida.dataInicio;
+            $scope.aprovacao.dataFinal = $scope.medida.dataFinal;
+
+            return $scope.aprovacao;
+        }
+
+        $scope.salvar = function (id) {
+            $scope.obj = $scope.getAprovacaoViewModel(id);
+            freezeScreen("add");
+            $http({
+                method: 'POST',
+                url: '@Url.Action("Atualizar","Aprovacao")',
+                params: $scope.obj,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(function successCallback(response) {
+                freezeScreen("remove");
+                    if (response.data.success) {
+                        swal(response.data.message);
+                        $timeout(function () {
+                            window.location.href = '@Url.Action("Index","Aprovacao")';
+                        }, 2000);
+                    } else {
+                        swal(response.data.message);
+                        console.log(response.data.error);
+                    }
+                });
+        }
+    }]);
+</script>

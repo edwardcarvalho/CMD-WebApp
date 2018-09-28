@@ -1,0 +1,222 @@
+﻿@model CMD.Model.Models.Medidas
+
+@{
+    Layout = null;
+    DateTime data = DateTime.Now;
+}
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/app.css" rel="stylesheet" />
+<link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/angular.min.js"></script>
+<script src="~/Scripts/Helpers.js"></script>
+
+<style type="text/css">
+    body {
+        background-color: #F8F8F8;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .container {
+        background-color: white;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        display: inline-flex;
+    }
+
+        ul li {
+            margin-right: 5px;
+        }
+
+    .corpo {
+        padding: 0 200px;
+    }
+</style>
+
+<style type="text/css" media="print">
+    .corpo {
+        padding: 0 30px;
+    }
+
+    button {
+        display: none;
+    }
+</style>
+@if (ViewBag.TipoImpressao != null)
+{
+    <div class="container">
+        <div class="corpo">
+            <div class="row">
+                <div class="panel-title text-center">
+                    <div class="col-lg-12 form-group">
+                        @if (ViewBag.TipoImpressao) //Suspensão
+                        {
+                            <h2><u><strong>Suspensão Disciplinar</strong></u></h2>
+                        }
+                        else //advertencia
+                        {
+                            <h2><u><strong>Aviso de Advertência</strong></u></h2>
+                        }
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row form-group">
+                        <div class="col-lg-12 ">
+                            <ul>
+                                <li>@Html.Label("Nome do Empregador:")</li>
+                                <li>Fun Code Ltda.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-12 ">
+                            <ul>
+                                <li>@Html.Label("Nome do(a) Empregado(a):")</li>
+                                <li>@Model.Funcionario.Nome</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
+                            <ul>
+                                <li>@Html.Label("Matricula:")</li>
+                                <li>@Model.Funcionario.Matricula</li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
+                            <ul>
+                                <li>@Html.Label("CPF:")</li>
+                                <li>@Model.Funcionario.Cpf</li>
+                            </ul>
+                        </div>
+                    </div>
+                    @if (!ViewBag.TipoImpressao)
+                {
+                        <div class="row form-group">
+                            <div class="col-lg-12">
+                                <ul>
+                                    <li>@Html.Label("Advertência Nº:")</li>
+                                    <li>@Model.MedidaId.ToString()</li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+
+                            @if (ViewBag.TipoImpressao)
+                            {
+                                <p>Fica V.Sa ciente que diante do cometimento do ato abaixo descrito, prejudicando assim o andamento do serviço em seu setor, como medida disciplinar, vímo-nos obrigados a aplicar-lhe a pena de SUSPENSÃO DISCIPLINAR, sendo que durante o período da suspensão ficarão suspensos os seus vencimentos salariais.</p>
+                            }
+                            else
+                            {
+                                <p>Fica V.Sa ADVERTIDO(A) que caso a ocorrência abaixo descrita volte a se repetir, poderá acarretar-lhe suspensão e até mesmo a demissão por justa causa nos termos do artigo 482, alínea h (indisciplina) e (desídia) da Consolidação das Leis do Trabalho.</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <ul>
+                                <li>@Html.Label("Data da Ocorrência:")</li>
+                                <li>@Model.DataOcorrencia.Value.ToString("dd/MM/yyyy")</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <ul>
+                                <li>@Html.Label("Descrição do Fato:")</li>
+                                <li> @Model.Descricao</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            @if (ViewBag.TipoImpressao)
+                            {
+                                <ul>
+                                    <li>@Html.Label("Período de Suspensão:")</li>
+                                    <li>@Model.DataInicioSuspensao.Value.ToString("dd/MM/yyyy")</li>
+                                    <li><p> a </p></li>
+                                    <li>@Model.DataFinalSuspensao.Value.ToString("dd/MM/yyyy")</li>
+                                </ul>
+
+                                <p>Esperamos que reflita sobre os transtornos causados por sua atitude que motivou esta punição e solicitamos seu especial empenho para que não reincida em falta idêntica, nem cometa falta de outra natureza, observando as normas reguladoras da relação de emprego, para que não tenhamos, no futuro, de tomar as medidas que nos facultam a legislação vigente.</p>
+                                <p>Ressaltamos que caso tal prática volte a se repetir, poderá acarretar-lhe a dispensa por justa causa, nos termos do Art. 482, alínea "h (indisciplina) e (desídia)” da Consolidação das Leis do Trabalho.</p>
+                                <p>Favor dar seu ciente na cópia deste.</p>
+                            }
+                            else
+                            {
+                                <p>Infração ao artigo 482, alínea "h (indisciplina) e (desídia) " da Consolidação das Leis do Trabalho.Esperamos que reflita sobre os transtornos causados por sua atitude que motivou essa ADVERTÊNCIA e solicitamos seu especial empenho para que não reincida em falta idêntica, nem cometa falta de outra natureza, observando as normas reguladoras da relação de emprego, para que não tenhamos, no futuro, de tomar as medidas que nos facultam a legislação vigente.</p>
+                                <p>Sem mais, solicitamos a devolução da cópia desta com o seu "ciente", reconhecendo sua responsabilidade.</p>
+
+                            }
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <ul>
+                                <li>@Html.Label("Data:")</li>
+                                <li>@data.ToString("dd/MM/yyyy")</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                                    <ul><li>________________________________</li></ul>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                                    <ul><li>________________________________</li></ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                                    <ul><li>Carimbo RH</li></ul>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                                    <ul><li>@Model.Funcionario.Nome</li></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    @Html.Label("Testemunhas:")
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                                    <ul class="custom">
+                                        <li>_________________________________</li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                                    <ul class="custom">
+                                        <li>_________________________________</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(function () {
+        window.print();
+    })
+</script>

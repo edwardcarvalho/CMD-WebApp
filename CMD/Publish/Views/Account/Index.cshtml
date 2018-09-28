@@ -1,0 +1,70 @@
+﻿@{
+    Layout = null;
+
+    //var userInCookie = Request.Cookies["CmdUserLogged"];
+    //if (userInCookie != null)
+    //{
+    //    Response.Redirect(Url.Action("Index", "Home"));
+    //}
+}
+
+@Styles.Render("~/Content/css")
+@Styles.Render("~/bundles/css")
+@Scripts.Render("~/bundles/js")
+
+<style>
+    h3, p {
+        color: white;
+    }
+</style>
+
+<div class="container" ng-app="app">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 form-box" style="margin-top: 10%;" ng-controller="LoginCtrl">
+            <div class="form-top">
+                <div class="form-top-left">
+                    <h3>Login</h3>
+                    <p>Insira as suas credenciais para acessar a plataforma:</p>
+                </div>
+                <div class="form-top-right">
+                    <i class="fa fa-key"></i>
+                </div>
+            </div>
+            <div class="form-bottom">
+                <div class="form-group">
+                    <label class="sr-only" for="form-username">Usuário</label>
+                    <input type="text" name="form-username" placeholder="Usuário" class="form-username form-control" id="form-username" ng-model="usuario">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="form-password">Senha</label>
+                    <input type="password" name="form-password" placeholder="Senha" class="form-password form-control" id="form-password" ng-model="senha">
+                </div>
+                <button type="button" class="btn btn-success" style="width:100%" ng-click="enviar()">Entrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="backstretch" style="left: 0px; top: 0px; overflow: hidden; margin: 0px; padding: 0px; height: 637px; width: 1349px; z-index: -999999; position: fixed;"><img src="~/Content/img/wallpaper.jpg" style="position: absolute; margin: 0px; padding: 0px; border: none; width: 1349px; height: 899.333px; max-height: none; max-width: none; z-index: -999999; left: 0px; top: -131.167px;"></div>
+
+<script>
+    var app = angular.module("app", []);
+    app.controller('LoginCtrl', ['$scope', '$http', function ($scope, $http) {
+
+        $scope.enviar = function () {
+            freezeScreen("add");
+            $http({
+                method: 'POST',
+                url: '@Url.Action("Login", "Account")',
+                params: { usuario: $scope.usuario, senha: $scope.senha },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(function successCallback(response) {
+                freezeScreen("remove");
+                if (response.data) {
+                    window.location.href = '@Url.Action("Index", "Home")';
+                } else {
+                    swal("Usuário ou senha inválidos.");
+                }
+            });
+        }
+    }]);
+</script>

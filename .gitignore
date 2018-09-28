@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/CMD/bin
+/packages
+/CMD/obj/Debug
+/CMD.Data/obj/Debug
+/CMD.Model/obj/Debug/CMD.Model.csproj.CoreCompileInputs.cache
+/CMD.Service/obj/Debug
+/CMD1/bin/roslyn
+/CMD1/obj/Debug

@@ -1,0 +1,68 @@
+﻿@using CMD.Shared.Helpers
+@using CMD.Model.Enumeradores
+@model CMD1.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<div ng-app="app" id="UsuarioCtrl" ng-controller="UsuarioCtrl">
+    <div class="painel">
+        <div class="painel-heading">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span>
+                        Cadastro de Usuários
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="painel-body">
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <div class="col-xs-12">
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                        {
+                            <div class="form-group">
+                                @Html.Label("Matricula")
+                                @Html.TextBoxFor(m => m.Matricula, new { @class = "form-control", @ng_model = "funcionario.Matricula", @ng_blur = "GetFuncionarioByMatricula()" })
+                                @Html.Label("Nome")
+                                @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", @readonly = true, @ng_model = "funcionario.Nome" })
+                                @Html.Label("Senha")
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                @Html.Label("Confirmação de Senha")
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                                @Html.Label("Perfil")
+                                @Html.DropDownListFor(m => m.PerfilId, Helper.EnumToSelect<Enums.Perfil>(), new { @class = "form-control" })
+                                <div style="display:none">
+                                    @Html.TextBoxFor(m => m.FuncionarioId, new { ng_model = "funcionario.FuncionarioId" })
+                                    @Html.TextBoxFor(m => m.Email, new { ng_model = "funcionario.Email" })
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success pull-right">Cadastrar</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var app = angular.module("app",[]);
+    app.controller("UsuarioCtrl", ["$scope", "$http", function ($scope, $http) {
+        $scope.funcionario = {};
+        $scope.GetFuncionarioByMatricula = function (data) {
+            $http.get('@Url.Action("GetFuncionarioByMatricula", "Account")?matricula=' + $scope.funcionario.Matricula)
+                .then(function (response) {
+                    if (response.data) {
+                        $scope.funcionario = response.data;
+                    } else {
+                        alert("Matricula não existe!");
+                    }
+                },
+                function (error) {
+
+                });
+        }
+    }]);
+
+</script>

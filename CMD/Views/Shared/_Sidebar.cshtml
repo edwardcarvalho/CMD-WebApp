@@ -1,0 +1,20 @@
+﻿<div class="menu">
+    <ul id="menu-content" class="menu-content collapse in">
+        <li data-toggle="collapse" data-target="#minhasSolicitacoes" class="collapsed active">
+            <a href="@Url.Action("Index", "Solicitacoes")">
+                <i class="fa fa-list"></i> Minhas Solicitações
+            </a>
+        </li>
+        <li data-toggle="collapse" data-target="#medidas" class="collapsed active">
+            <a href="#">
+                <i class="fa fa-gavel"></i> Medidas
+            </a>
+        </li>
+        <ul class="sub-menu collapse" id="medidas">
+            <li><a href="@Url.Action("Index", "Medidas")"><i class="fa fa-plus-circle"></i>Cadastrar</a></li>
+            <li><a href="@Url.Action("Index", "Aprovacao")"><i class="fa fa-check-circle"></i>Aprovar</a></li>
+            <li><a href="@Url.Action("Desbloquear", "Medidas")"><i class="fa fa-unlock"></i>Desbloquear</a></li>
+            @*<li><a href="#"><i class="fa fa-print"></i>Imprimir</a></li>*@
+        </ul>
+    </ul>
+</div>
